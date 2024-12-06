@@ -11,6 +11,7 @@ class TimerApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Timers Practice',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         fontFamily: "Montserrat",
         colorScheme: ColorScheme.fromSeed(
