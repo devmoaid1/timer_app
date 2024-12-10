@@ -1,15 +1,14 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 
-enum TimerState { initial, running, paused, stopped }
+enum TimerState { initial, running, paused }
 
 class TimerViewModel extends ChangeNotifier {
   TimerViewModel._();
   static final TimerViewModel _instance = TimerViewModel._();
   static TimerViewModel get instance => _instance;
-  int _remainingSeconds = 30;
+  int _remainingSeconds = 15;
   int get remainingSeconds => _remainingSeconds;
 
   TimerState _timerState = TimerState.initial;
@@ -26,10 +25,10 @@ class TimerViewModel extends ChangeNotifier {
       const Duration(seconds: 1),
       (timer) {
         if (_remainingSeconds <= 0) {
-          _timerState = TimerState.stopped;
-          _remainingSeconds = 30;
+          // reset when timer finish
+          _timerState = TimerState.initial;
+          _remainingSeconds = 15;
           timer.cancel();
-          log('Count down stopped');
         } else {
           _remainingSeconds--;
         }
@@ -46,17 +45,15 @@ class TimerViewModel extends ChangeNotifier {
 
   void handleTimerButton() {
     if (_timerState != TimerState.running) {
-      log('Starting count down');
       _startCountDown();
     } else {
-      log('Pausing count down');
       _pauseCountDown();
     }
   }
 
   void handleResetTimer() {
     _timerState = TimerState.initial;
-    _remainingSeconds = 30;
+    _remainingSeconds = 15;
     timer.cancel();
     notifyListeners();
   }

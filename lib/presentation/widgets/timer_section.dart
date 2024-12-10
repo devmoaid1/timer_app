@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 
-import '../../core/theme/app_colors.dart';
-
 class TimerSection extends StatelessWidget {
   const TimerSection({
     super.key,
     required this.size,
     required this.remainingSeconds,
+    required this.progressColor,
   });
 
   final double size;
-
+  final Color progressColor;
   final int remainingSeconds;
 
   @override
@@ -21,10 +20,13 @@ class TimerSection extends StatelessWidget {
         SizedBox(
           width: size * 0.4,
           height: size * 0.4,
-          child: CircularProgressIndicator(
-            value: remainingSeconds / 30,
-            strokeWidth: 9,
-            color: AppColors.errorColor,
+          child: Transform.flip(
+            flipX: true,
+            child: CircularProgressIndicator(
+              value: remainingSeconds / 15,
+              strokeWidth: 9,
+              color: progressColor,
+            ),
           ),
         ),
         Text(

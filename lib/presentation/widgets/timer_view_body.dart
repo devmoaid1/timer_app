@@ -66,7 +66,7 @@ class ControlButtonsListenableBuilder extends StatelessWidget {
                 child: CustomButton(
                     onPressed: () => viewModel.handleTimerButton(),
                     text: viewModel.timerState == TimerState.running
-                        ? 'Stop'
+                        ? 'Pause'
                         : 'Start'),
               ),
               SizedBox(
@@ -99,8 +99,20 @@ class TimerListenableBuilder extends StatelessWidget {
     return ListenableBuilder(
         listenable: viewModel,
         builder: (context, child) {
+          final progressColor = () {
+            switch (viewModel.timerState) {
+              case TimerState.running:
+                return Colors.green;
+              case TimerState.paused:
+                return Colors.red;
+              default:
+                return AppColors.primaryColor; // Default color if needed
+            }
+          }();
           return TimerSection(
-              size: size.width, remainingSeconds: viewModel.remainingSeconds);
+              progressColor: progressColor,
+              size: size.width,
+              remainingSeconds: viewModel.remainingSeconds);
         });
   }
 }
