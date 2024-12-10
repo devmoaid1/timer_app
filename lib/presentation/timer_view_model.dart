@@ -53,4 +53,11 @@ class TimerViewModel extends ChangeNotifier {
       _pauseCountDown();
     }
   }
+
+  void handleResetTimer() {
+    _timerState = TimerState.initial;
+    _remainingSeconds = 30;
+    timer.cancel();
+    notifyListeners();
+  }
 }
