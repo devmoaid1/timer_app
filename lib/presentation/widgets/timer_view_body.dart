@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:timers_practice/core/theme/app_colors.dart';
 import 'package:timers_practice/core/widgets/custom_buttom.dart';
 
 import '../timer_view_model.dart';
@@ -22,7 +25,7 @@ class _TimerViewBodyState extends State<TimerViewBody> {
 
   @override
   Widget build(BuildContext context) {
-    final mediaQuery = MediaQuery.sizeOf(context);
+    final size = MediaQuery.sizeOf(context);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -30,25 +33,56 @@ class _TimerViewBodyState extends State<TimerViewBody> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          ListenableBuilder(
-              listenable: viewModel,
-              builder: (context, child) => Center(
-                    child: Text(
-                      viewModel.remainingSeconds.toString(),
-                      style: const TextStyle(fontSize: 50),
-                    ),
-                  )),
+          Center(
+            child: ListenableBuilder(
+                listenable: viewModel,
+                builder: (context, child) {
+                  return Stack(
+                    alignment: Alignment
+                        .center, // Ensures all children are centered in the Stack
+                    children: [
+                      SizedBox(
+                        width: size.width * 0.4,
+                        height: size.width * 0.4,
+                        child: CircularProgressIndicator(
+                          value: viewModel.remainingSeconds / 30,
+                          strokeWidth: 9,
+                        ),
+                      ),
+                      Text(
+                        viewModel.remainingSeconds.toString(),
+                        style: const TextStyle(fontSize: 50),
+                      ),
+                    ],
+                  );
+                }),
+          ),
           SizedBox(
-            height: mediaQuery.height * 0.15,
+            height: size.height * 0.15,
           ),
           ListenableBuilder(
               listenable: viewModel,
               builder: (context, child) {
-                return CustomButton(
-                    onPressed: () => viewModel.handleTimerButton(),
-                    text: viewModel.timerState == TimerState.running
-                        ? 'Stop'
-                        : 'Start');
+                return Row(
+                  children: [
+                    Expanded(
+                      child: CustomButton(
+                          onPressed: () => viewModel.handleTimerButton(),
+                          text: viewModel.timerState == TimerState.running
+                              ? 'Stop'
+                              : 'Start'),
+                    ),
+                    SizedBox(
+                      width: size.width * 0.05,
+                    ),
+                    Expanded(
+                      child: CustomButton(
+                          color: AppColors.errorColor,
+                          onPressed: () => viewModel.handleTimerButton(),
+                          text: 'Reset'),
+                    ),
+                  ],
+                );
               }),
         ],
       ),
