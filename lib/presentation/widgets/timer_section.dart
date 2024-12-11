@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:timers_practice/core/theme/app_colors.dart';
 
 class TimerSection extends StatelessWidget {
   const TimerSection({
@@ -6,11 +7,15 @@ class TimerSection extends StatelessWidget {
     required this.size,
     required this.remainingSeconds,
     required this.progressColor,
+    required this.timerFontSize,
+    required this.fraction,
   });
 
   final double size;
   final Color progressColor;
   final int remainingSeconds;
+  final double timerFontSize;
+  final int fraction;
 
   @override
   Widget build(BuildContext context) {
@@ -18,20 +23,21 @@ class TimerSection extends StatelessWidget {
       alignment: Alignment.center,
       children: [
         SizedBox(
-          width: size * 0.4,
-          height: size * 0.4,
+          width: size,
+          height: size,
           child: Transform.flip(
             flipX: true,
             child: CircularProgressIndicator(
-              value: remainingSeconds / 15,
+              value: remainingSeconds / fraction,
               strokeWidth: 9,
               color: progressColor,
+              backgroundColor: Colors.grey.shade300,
             ),
           ),
         ),
         Text(
           remainingSeconds.toString(),
-          style: const TextStyle(fontSize: 50),
+          style: TextStyle(fontSize: timerFontSize),
         ),
       ],
     );

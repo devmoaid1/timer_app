@@ -30,15 +30,65 @@ class _TimerViewBodyState extends State<TimerViewBody> {
       padding: const EdgeInsets.symmetric(horizontal: 15),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
+          const Spacer(),
           Center(
-            child: TimerListenableBuilder(viewModel: viewModel, size: size),
+            child: ListenableBuilder(
+                listenable: viewModel,
+                builder: (context, _) {
+                  final progressColor = () {
+                    switch (viewModel.timerState) {
+                      case TimerState.running:
+                        return Colors.green;
+                      case TimerState.paused:
+                        return Colors.red;
+                      default:
+                        return AppColors
+                            .primaryColor; // Default color if needed
+                    }
+                  }();
+                  return TimerSection(
+                      key: ValueKey(viewModel.remainingSeconds),
+                      progressColor: progressColor,
+                      timerFontSize: 50,
+                      size: size.width * 0.4,
+                      fraction: 15,
+                      remainingSeconds: viewModel.remainingSeconds);
+                }),
           ),
           SizedBox(
-            height: size.height * 0.15,
+            height: size.height * 0.05,
+          ),
+          Center(
+            child: ListenableBuilder(
+                listenable: viewModel,
+                builder: (context, _) {
+                  final progressColor = () {
+                    switch (viewModel.cycleState) {
+                      case CycleState.onTime:
+                        return Colors.green;
+                      case CycleState.offTime:
+                        return Colors.red;
+                      default:
+                        return Colors.green; // Default color if needed
+                    }
+                  }();
+                  return TimerSection(
+                      key: ValueKey(viewModel.cycleSeconds),
+                      progressColor: progressColor,
+                      timerFontSize: 25,
+                      fraction:
+                          viewModel.cycleState == CycleState.onTime ? 8 : 4,
+                      size: size.width * 0.2,
+                      remainingSeconds: viewModel.cycleSeconds);
+                }),
+          ),
+          SizedBox(
+            height: size.height * 0.05,
           ),
           ControlButtonsListenableBuilder(viewModel: viewModel, size: size),
+          const Spacer(),
         ],
       ),
     );
@@ -80,39 +130,6 @@ class ControlButtonsListenableBuilder extends StatelessWidget {
               ),
             ],
           );
-        });
-  }
-}
-
-class TimerListenableBuilder extends StatelessWidget {
-  const TimerListenableBuilder({
-    super.key,
-    required this.viewModel,
-    required this.size,
-  });
-
-  final TimerViewModel viewModel;
-  final Size size;
-
-  @override
-  Widget build(BuildContext context) {
-    return ListenableBuilder(
-        listenable: viewModel,
-        builder: (context, child) {
-          final progressColor = () {
-            switch (viewModel.timerState) {
-              case TimerState.running:
-                return Colors.green;
-              case TimerState.paused:
-                return Colors.red;
-              default:
-                return AppColors.primaryColor; // Default color if needed
-            }
-          }();
-          return TimerSection(
-              progressColor: progressColor,
-              size: size.width,
-              remainingSeconds: viewModel.remainingSeconds);
         });
   }
 }
